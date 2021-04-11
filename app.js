@@ -141,7 +141,7 @@ function fetchComments($id) {
                     '                            <div class="col-xs-10 col-md-10">\n' +
                     '                                <div><p>'+item['comment']+'</p></div>\n' +
                     '                                <br/>\n' +
-                    '                                <div><h5 style="color: red"> Score: '+item['score']+'</h5></div>\n' +
+                    '                                <div><h5 style="color: #ff0000"> Score: '+item['score']+'</h5></div>\n' +
                     ' <div class="progress">\n' +
                     '  <div class="progress-bar" role="progressbar" aria-valuenow="'+item['score']+'"\n' +
                     '  aria-valuemin="0" aria-valuemax="5" style="width:'+(item['score']/5)*100+'%">\n' +
@@ -163,21 +163,74 @@ function fetchComments($id) {
 }
 
 function setComment($id) {
+/*
+    jsonObj = [];
+    item = {};
 
+    //productid
+    item["product_id"] = {"product_id":$id};
+
+    //comment
+    item["comment"]= $("#message-text").val();
+   !($.trim($('#message-text').val()) == '')? item ["comment"] = $('#message-text').val(): '';
+    //score
+    !($.trim($('#score').val()) == '')? item ["score"] = $('#score').val(): '';
+
+    jsonObj.push(item);
+*/
     //TODO complete implementation using the product id
-    alert("app.js/setComment() not implemented")
-
     //HINT
     //Take note of how the Ajax call in app.js/fetchComments() posts a GET request to corresponding API endpoint.
     //Look at the Microservice API Documentation and find out the appripriate type of request for this action.
 
+    $.ajax({
+   url: Url+'SetComment',
+   type: 'post',
+   dataType: 'json',
+   data: JSON.stringify({'product_id':$id,'comment': $('#message-text').val(), 'score': $('#score').val()}),
+   contentType: 'text/plain', 
+   success: function (data) {
+       alert("The product comment of "+ $id + " was added");
+
+},
+error: function (data){
+    alert("app.js/setComment() is still not implemented")
+    }
+});
+  
+
+
 }
 
 function addToCart($id) {
+    let email =$.trim($('#email').val()) //gets the user's email
 
-    //TODO complete implementation using the product id
-    alert("app.js/addToCart() not implemented")
+    // email is used to add items to a user
+    if(email != '') {
+        sessionStorage.setItem('email', email);
+    }
+    else {
+        alert("Please enter your email at top of page."); //alert user since email is empty
+        //need return or else the success function goes through
+        return;
+    }
 
+
+    $.ajax({
+        url: Url+'AddToCart',
+        type: 'post',
+        dataType: 'json',
+        data: JSON.stringify({'email': email,'product_id': $id}),
+        contentType: 'text/plain',
+
+        success: function (data) {
+            alert("the addToCart works");
+        },
+        error: function(data){
+        alert("this is not working correctly");
+        }
+
+    });
 
 }
 
