@@ -47,6 +47,8 @@ function fetchProductList() {
                     '                <div class="card-footer">\n' +
                     '                    <button class="btn btn-info float-right btn-sm" onclick="addToCart('+item['id']+')">Add to Cart</button>\n' +
                     '                </div>\n' +
+                    '<div class="card-footer">\n+' +
+                    '<button class="btn btn-info float-right btn-sm" onclick="addToWish('+item['id']+')">Add to WishList</button>\n'+
                     '            </div>\n' +
                     '        </div>';
                 productList=productList+productListAdd;
@@ -233,6 +235,38 @@ function addToCart($id) {
     });
 
 }
+
+function addToWish($id){
+    let email =$.trim($('#email').val()) //need the user's email to add product to wishlist
+
+    // email is used to add items to a user
+    if(email != '') {
+        sessionStorage.setItem('email', email);
+    }
+    else {
+        alert("Please enter your email at top of page."); //alert user since email is empty
+        return;
+    }
+
+    $.ajax({
+        url: Url+'addToWish',
+        type: 'post',
+        dataType: 'json',
+        data: JSON.stringify({'email': email,'product_id': $id}),
+        contentType: 'text/plain',
+
+        success: function (data) {
+            alert("the addToWish works");
+        },
+        error: function(data){
+            alert("the Wishlist has not been added yet");
+        }
+
+    });
+}
+
+
+
 
 function toShoppingCart(){
     let email =$.trim($('#email').val()); //gets the user's email
